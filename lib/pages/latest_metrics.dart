@@ -209,7 +209,6 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
           LayoutBuilder(builder: (context, c) {
             // dimensione desiderata del quadrato heatmap
             const desired = 420.0;
-            final maxW = c.maxWidth;
             // FittedBox scalerà se maxW < desired
             return Center(
               child: FittedBox(
