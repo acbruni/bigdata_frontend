@@ -25,8 +25,5 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/home_query.png
-    - assets/home_model.PNG
-    - assets/home_back.jpg
     - assets/world_map.json
   uses-material-design: true

@@ -1,7 +1,7 @@
 import 'package:bigdata_natural_disaster/builders/builder_utils.dart';
 import 'package:flutter/material.dart';
 
-/// Podio su avg_engagement con info di uses
+// == Efficient Hashtags podium ===
 Widget buildEfficientHashtagsPodium(dynamic data) {
   final rows = ensureListOfMap(data);
   rows.sort((a, b) => n_(b['avg_engagement']).compareTo(n_(a['avg_engagement'])));

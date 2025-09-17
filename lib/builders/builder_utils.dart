@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-/// ===== Helpers comuni =====
+/// == Helpers ==
 num n_(dynamic v) => (v is num) ? v : num.tryParse('$v') ?? 0;
 int i_(dynamic v) => n_(v).toInt();
 String s_(dynamic v) => (v == null) ? '' : v.toString();
@@ -18,7 +18,7 @@ List<Map<String, dynamic>> ensureListOfMap(dynamic data) {
   return <Map<String, dynamic>>[];
 }
 
-/// ===== Line chart (fl_chart) =====
+/// == Line chart (fl_chart) ==
 class LineChartMini extends StatelessWidget {
   final List<Offset> points;
   final double maxX, maxY;
@@ -44,8 +44,6 @@ class LineChartMini extends StatelessWidget {
 
     final safeMaxX = maxX <= 0 ? 1.0 : maxX;
     final safeMaxY = maxY <= 0 ? 1.0 : maxY;
-
-    // Mostra ~12 tacche sull’asse X
     final xInterval = safeMaxX <= 12 ? 1.0 : (safeMaxX / 12).ceilToDouble();
     final yInterval = (safeMaxY / 5).clamp(1, double.infinity);
 
@@ -133,7 +131,7 @@ class LineChartMini extends StatelessWidget {
   }
 }
 
-/// ===== Pie chart (fl_chart) =====
+/// == Pie chart (fl_chart) ==
 class PieSlice {
   final String label;
   final double value;
@@ -141,7 +139,7 @@ class PieSlice {
 }
 
 class PieChartMini extends StatefulWidget {
-  final String title;                 // lascia vuoto '' se non vuoi il titolo
+  final String title;                
   final List<PieSlice> slices;
   const PieChartMini({super.key, required this.title, required this.slices});
 
@@ -199,11 +197,10 @@ class _PieChartMiniState extends State<PieChartMini> {
             ),
           Expanded(
             child: AspectRatio(
-              aspectRatio: 2, // più grande, come richiesto
+              aspectRatio: 2, 
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Grafico
                   Expanded(
                     child: AspectRatio(
                       aspectRatio: 1,
@@ -233,8 +230,6 @@ class _PieChartMiniState extends State<PieChartMini> {
                   ),
 
                   const SizedBox(width: 20),
-
-                  // Legenda a destra
                   SizedBox(
                     width: 200,
                     child: ListView.builder(
@@ -278,7 +273,7 @@ const List<Color> kPalette = [
   Colors.blue,
 ];
 
-/// ===== Podio/cascata (UI custom: lascio invariato) =====
+// == Podium list ====
 class PodiumItem {
   final String label;
   final double value;
@@ -395,7 +390,7 @@ class PodiumList extends StatelessWidget {
   }
 }
 
-/// ===== Swatch legenda =====
+// == Legend swatch ====
 class LegendSwatch extends StatelessWidget {
   final Color color;
   final String label;
@@ -410,7 +405,7 @@ class LegendSwatch extends StatelessWidget {
   }
 }
 
-/// ===== Barra verticale semplice (fl_chart) =====
+//  == Simple bar ==
 class SimpleBar extends StatelessWidget {
   final double value, max;
   final Color color;

@@ -9,11 +9,11 @@ const String API_BASE = String.fromEnvironment(
   defaultValue: 'http://localhost:8000',
 );
 
-// === Query Class (icone + tooltip) ===
+// === Query Class ===
 class QuerySpec {
   final String id;
   final String label;
-  final String method; // 'GET' | 'POST'
+  final String method; 
   final String path;
   final Map<String, String>? defaultParams;
   final Widget Function(dynamic data) builder;
@@ -177,7 +177,7 @@ class _ApiQueryPageState extends State<ApiQueryPage> {
       });
     }
   }
-
+// === BUILD ===
   @override
   Widget build(BuildContext context) {
     final appGradient = LinearGradient(
@@ -188,8 +188,6 @@ class _ApiQueryPageState extends State<ApiQueryPage> {
         Colors.black.withOpacity(0.80),
       ],
     );
-
-    // dimensioni sidebar + pulsante circolare
     final double knobSize = 44;
     final double sidebarW = _isCollapsed ? 80.0 : 300.0;
 
@@ -210,13 +208,11 @@ class _ApiQueryPageState extends State<ApiQueryPage> {
       ),
       body: Row(
         children: [
-          // === Area riservata: sidebar + spazio per il pulsante circolare "attaccato" al bordo
           SizedBox(
-            width: sidebarW + knobSize * 0.75, // 1/2 dentro + un piccolo margine
+            width: sidebarW + knobSize * 0.75, 
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                // Sidebar
                 Positioned(
                   left: 3,
                   top: 12,
@@ -259,10 +255,8 @@ class _ApiQueryPageState extends State<ApiQueryPage> {
                     ),
                   ),
                 ),
-
-                // Pulsante circolare in stile mockup (mezzo dentro/mezzo fuori)
                 Positioned(
-                  left: sidebarW - knobSize / 2, // agganciato al bordo destro
+                  left: sidebarW - knobSize / 2, 
                   top: null,
                   bottom: null,
                   height: knobSize,
@@ -276,8 +270,6 @@ class _ApiQueryPageState extends State<ApiQueryPage> {
               ],
             ),
           ),
-
-          // === Pannello destro ===
           Expanded(
             child: SafeArea(
               child: Builder(
@@ -353,7 +345,7 @@ class _ApiQueryPageState extends State<ApiQueryPage> {
   }
 }
 
-// === Pulsante circolare stile mockup ===
+// === Pulsante circolare ===
 enum ChevronDirection { left, right }
 
 class _CircleChevronButton extends StatefulWidget {
@@ -406,7 +398,7 @@ class _CircleChevronButtonState extends State<_CircleChevronButton> {
   }
 }
 
-// =================== Sidebar content ===================
+// === Sidebar content ===
 
 class _SidebarContent extends StatelessWidget {
   final bool isCollapsed;
@@ -429,9 +421,8 @@ class _SidebarContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Altezza minima desiderata per item
     const double minItemCollapsed = 44.0;
-    const double minItemExpanded  = 46.0; // più basso per evitare scroll
+    const double minItemExpanded  = 46.0; 
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -489,13 +480,11 @@ class _SidebarContent extends StatelessWidget {
                     ),
                     onPressed: () => onTapItem(spec),
                     child: isCollapsed
-                        // Collassata: SOLO icona (niente tick)
                         ? Tooltip(
                             message: spec.hint,
                             waitDuration: const Duration(milliseconds: 250),
                             child: Icon(spec.icon, color: Colors.black87),
                           )
-                        // Espansa: icona + testo + tick (se presente)
                         : Row(
                             children: [
                               Tooltip(
@@ -530,7 +519,7 @@ class _SidebarContent extends StatelessWidget {
   }
 }
 
-// == ERROR VIEW ==
+// === ERROR VIEW ===
 class _ErrorView extends StatelessWidget {
   final String message;
   const _ErrorView({required this.message});

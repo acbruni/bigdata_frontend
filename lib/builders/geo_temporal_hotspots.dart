@@ -1,20 +1,17 @@
 import 'package:bigdata_natural_disaster/builders/builder_utils.dart';
 import 'package:flutter/material.dart';
 
-/// Timeline per città: volume per ora (0..23)
+// == Geo-Temporal Hotspots timelines ===
 Widget buildGeoTemporalHotspotsTimelines(dynamic data) {
   final rows = ensureListOfMap(data);
 
   int pickHour(Map<String, dynamic> r) {
-    // 1) Se l'API fornisce hour_of_day (0..23), usa quello
     if (r.containsKey('hour_of_day')) {
       return i_(r['hour_of_day']).clamp(0, 23);
     }
-    // 2) Altrimenti prova a fare parse della ISO (es. 2017-08-27T03:00:00Z)
     final iso = s_(r['hour']);
     final dt = DateTime.tryParse(iso);
     if (dt != null) return dt.toUtc().hour;
-    // 3) Fallback: se fosse già un numero in stringa
     return i_(r['hour']).clamp(0, 23);
   }
 

@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:bigdata_natural_disaster/builders/builder_utils.dart';
 
-/// Card stile tweet per /top-viral-post
-/// Si aspetta l'output dell'endpoint aggiornato che fornisce:
-///  - text_full, engagement, lang, device_norm, created_at,
-///  - user_name, user_handle (appiattiti) — ma supporta anche i fallback annidati.
+// == Top Viral Post list ===
 Widget buildTopViralPost(dynamic data) {
   final rows = ensureListOfMap(data);
 
   String s(dynamic v) => s_(v);
-
-  // Helpers robusti: usano i campi appiattiti, poi fallback annidati / top-level
   String userName(Map<String, dynamic> r) {
     final u = (r['user'] is Map) ? r['user'] as Map : const {};
     return s(r['user_name'] ?? u['name'] ?? r['name'] ?? 'Utente');
@@ -69,11 +64,9 @@ Widget buildTopViralPost(dynamic data) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header: avatar + nome/@handle + created_at a destra
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Avatar "omino" stile immagine mancante
                 CircleAvatar(
                   radius: 22,
                   backgroundColor: Colors.grey.shade400,
@@ -111,8 +104,6 @@ Widget buildTopViralPost(dynamic data) {
             ),
 
             const SizedBox(height: 10),
-
-            // Testo COMPLETO (no truncate)
             Text(
               text,
               style: const TextStyle(fontSize: 15, height: 1.35),
@@ -120,8 +111,6 @@ Widget buildTopViralPost(dynamic data) {
             ),
 
             const SizedBox(height: 10),
-
-            // Footer: metriche rapide
             Row(
               children: [
                 const Icon(Icons.bar_chart, size: 16, color: Colors.black54),

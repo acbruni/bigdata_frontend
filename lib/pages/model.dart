@@ -3,16 +3,15 @@ import 'package:bigdata_natural_disaster/pages/predict_panel.dart';
 import 'package:bigdata_natural_disaster/pages/train_panel.dart';
 import 'package:flutter/material.dart';
 
+// == PAGE MODEL INTERFACE ==
 class ModelPage extends StatefulWidget {
   const ModelPage({super.key});
   @override
   State<ModelPage> createState() => _ModelPageState();
 }
-
+// == STATE MODEL INTERFACE ==
 class _ModelPageState extends State<ModelPage> {
-  // 0 = Metrics, 1 = Train, 2 = Predict  (Metrics iniziale)
   int _selected = 0;
-
   @override
   Widget build(BuildContext context) {
     final gradient = LinearGradient(
@@ -23,7 +22,6 @@ class _ModelPageState extends State<ModelPage> {
         Colors.black.withOpacity(0.80),
       ],
     );
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -92,7 +90,7 @@ class _ModelPageState extends State<ModelPage> {
     );
   }
 }
-
+// == WIDGET CARD INTERATTIVA ==
 class _AppBarIconTab extends StatelessWidget {
   final IconData icon;
   final String label;

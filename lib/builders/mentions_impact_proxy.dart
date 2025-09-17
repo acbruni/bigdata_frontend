@@ -1,13 +1,10 @@
 import 'package:bigdata_natural_disaster/builders/builder_utils.dart';
 import 'package:flutter/material.dart';
 
-/// “Andamento” a barre per 4 combinazioni: verified×mentions
-/// Disposizione: 2 righe — sopra Verified, sotto Unverified.
-/// In ogni cella: due barre (Volume e Avg engagement).
+// == Mentions × Impact trend ===
 Widget buildMentionsImpactTrend(dynamic data) {
   final rows = ensureListOfMap(data);
 
-  // indicizza per coppia (verified, has_mentions)
   final Map<String, Map<String, dynamic>> byKey = {};
   for (final r in rows) {
     final v = (r['verified'] == true);
@@ -17,7 +14,6 @@ Widget buildMentionsImpactTrend(dynamic data) {
   Map<String, dynamic>? getRow(bool verified, bool mentions) =>
       byKey['${verified ? 1 : 0}|${mentions ? 1 : 0}'];
 
-  // scale comuni
   num maxVol = 1;
   num maxAvg = 1;
   for (final r in rows) {
@@ -72,9 +68,7 @@ Widget buildMentionsImpactTrend(dynamic data) {
         Expanded(
           child: ListView(
             children: [
-              // Row header opzionali per le colonne
               const SizedBox(height: 6),
-              // ─── RIGA 1: VERIFIED ───
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -91,8 +85,6 @@ Widget buildMentionsImpactTrend(dynamic data) {
                 ],
               ),
               const SizedBox(height: 20),
-
-              // ─── RIGA 2: UNVERIFIED ───
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

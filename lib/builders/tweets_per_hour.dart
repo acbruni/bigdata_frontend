@@ -1,7 +1,7 @@
 import 'package:bigdata_natural_disaster/builders/builder_utils.dart';
 import 'package:flutter/material.dart';
 
-/// Linea: tweets per ora
+// == Tweets Per Hour chart ===
 Widget buildTweetsPerHourChart(dynamic data) {
   final rows = ensureListOfMap(data);
   final pts = <Offset>[];

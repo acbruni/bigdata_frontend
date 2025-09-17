@@ -5,9 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-/// ============================
-/// CONFIG API
-/// ============================
+// == API config ==
 const String API_BASE = 'http://127.0.0.1:8000';
 const String EP_TRAIN = '/model/train';
 const Map<String, String> API_HEADERS = {'Content-Type': 'application/json'};
@@ -19,14 +17,12 @@ class TrainPanelPage extends StatefulWidget {
 }
 
 class _TrainPanelPageState extends State<TrainPanelPage> {
-  // --- form state ---
   final _filesLimitCtrl = TextEditingController();
   final _minDfCtrl = TextEditingController();
   final _vocabSizeCtrl = TextEditingController(text: '5000');
   bool _dynamicShuffle = true;
   bool _binaryCv = true;
 
-  // --- loading & metrics ---
   bool _isLoading = false;
   bool _hasMetrics = false;
 
@@ -47,7 +43,6 @@ class _TrainPanelPageState extends State<TrainPanelPage> {
     super.dispose();
   }
 
-  // ---------- helpers ----------
   int? _parseIntOrNull(String s) {
     final t = s.trim();
     if (t.isEmpty) return null;
@@ -136,7 +131,6 @@ class _TrainPanelPageState extends State<TrainPanelPage> {
     _resetWithError('—', '—');
   }
 
-  // ---------- UI: glass helpers ----------
   Widget glassCard({required Widget child, EdgeInsets pad = const EdgeInsets.all(18)}) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(18),
@@ -252,7 +246,6 @@ class _TrainPanelPageState extends State<TrainPanelPage> {
     );
   }
 
-  // ---------- Left form ----------
   Widget _leftForm() {
     return Column(
       children: [
@@ -318,8 +311,6 @@ class _TrainPanelPageState extends State<TrainPanelPage> {
           ),
         ),
         const SizedBox(height: 12),
-
-        // Bottoni con LOADING centrato tra i due
         Row(
           children: [
             _gradientButton(icon: Icons.cleaning_services_outlined, label: 'Clean', onTap: _isLoading ? null : _doClean),
@@ -347,8 +338,6 @@ class _TrainPanelPageState extends State<TrainPanelPage> {
       ],
     );
   }
-
-  // ---------- Right: metrics ----------
   Widget _metricsRight() {
     return Column(
       children: [
@@ -395,7 +384,6 @@ class _TrainPanelPageState extends State<TrainPanelPage> {
 
                   Text('Confusion matrix', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Colors.black.withOpacity(0.85))),
                   const SizedBox(height: 8),
-                  // Altezza fissa; la heatmap calcola la sua larghezza e si CENTRA
                   SizedBox(
                     height: 260,
                     child: Center(
@@ -426,10 +414,7 @@ class _TrainPanelPageState extends State<TrainPanelPage> {
     );
   }
 }
-
-/// =======================
-///  Per-class table
-/// =======================
+// == TABELLA PER-CLASSE ==
 class _PerClassTable extends StatelessWidget {
   final Map<String, Map<String, num>> perClass;
   const _PerClassTable({required this.perClass});
@@ -480,9 +465,7 @@ class _PerClassTable extends StatelessWidget {
   }
 }
 
-/// ======================================
-///  Confusion matrix mini-heatmap (centrata)
-/// ======================================
+// == HEATMAP MATRICE DI CONFUSIONE ==
 class _ConfusionHeatmap extends StatelessWidget {
   final List<String> labels;
   final List<List<int>> matrix;
@@ -494,8 +477,6 @@ class _ConfusionHeatmap extends StatelessWidget {
   Widget build(BuildContext context) {
     if (labels.isEmpty || matrix.isEmpty) return _emptyBox();
     final n = matrix.length;
-
-    // max per scala colori
     int maxV = 1;
     for (final r in matrix) {
       for (final v in r) maxV = math.max(maxV, v);
@@ -504,8 +485,6 @@ class _ConfusionHeatmap extends StatelessWidget {
       final t = (v / maxV).clamp(0.0, 1.0);
       return Color.lerp(Colors.white, Colors.amber.shade700, t)!;
     }
-
-    // gutter + spacing
     const double leftGutter = 90.0;
     const double topGutter = 28.0;
     const double spacing = 6.0;
@@ -522,8 +501,6 @@ class _ConfusionHeatmap extends StatelessWidget {
         child: LayoutBuilder(builder: (context, c) {
           final availW = c.maxWidth;
           final availH = c.maxHeight;
-
-          // area griglia quadrata massima (senza gutter)
           final gridSize = math.min(
             (availW - leftGutter - 8).clamp(60.0, double.infinity),
             (availH - topGutter - 8).clamp(60.0, double.infinity),
@@ -531,17 +508,15 @@ class _ConfusionHeatmap extends StatelessWidget {
 
           final cell = ((gridSize - spacing * (n - 1)) / n).clamp(18.0, 56.0);
           final gridPixelW = cell * n + spacing * (n - 1);
-          final contentW = leftGutter + gridPixelW; // larghezza effettiva del contenuto
-
+          final contentW = leftGutter + gridPixelW; 
           return Align(
-            alignment: Alignment.center, // <-- CENTRATO
+            alignment: Alignment.center, 
             child: SizedBox(
               width: contentW,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // header colonne
                   Row(
                     children: [
                       const SizedBox(width: leftGutter, height: topGutter),
@@ -565,7 +540,6 @@ class _ConfusionHeatmap extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // righe + celle
                   ...List.generate(n, (i) {
                     final row = matrix[i];
                     return Padding(

@@ -5,11 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-/// URL del backend.
+// == CONFIGURAZIONE API ===
 const String kDefaultApiBase = 'http://localhost:8000';
 const String kApiBase = String.fromEnvironment('API_BASE_URL', defaultValue: kDefaultApiBase);
 
-/// Client HTTP centralizzato.
+// == CLIENT API ==
 class Api {
   Api._(this.baseUrl, this._client);
   final String baseUrl;
@@ -17,7 +17,7 @@ class Api {
 
   static late final Api I;
 
-  /// Inizializzazione globale (da chiamare nel main)
+  // == INIZIALIZZAZIONE CLIENT API ==
   static void init({required String baseUrl}) {
     I = Api._(baseUrl, http.Client());
   }
@@ -35,8 +35,6 @@ class Api {
             'content-type': 'application/json',
             ...?headers,
           });
-
-  /// health-check 
   Future<bool> healthCheck({String path = '/health'}) async {
     try {
       final r = await _client.get(_u(path)).timeout(const Duration(seconds: 3));
@@ -51,11 +49,8 @@ class Api {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Inizializza il client verso il backend
+  // ==Inizializza il client API ==
   Api.init(baseUrl: kApiBase);
-
-  // Ping in debug per loggare lo stato del backend
   if (kDebugMode) {
     unawaited(() async {
       final ok = await Api.I.healthCheck(path: '/health'); 

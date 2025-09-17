@@ -3,21 +3,19 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-/// === API ===
+// === API ===
 const String API_BASE = 'http://127.0.0.1:8000';
 const String EP_LATEST = '/model/latest_metrics';
-
+// === LATEST METRICS PAGE ===
 class LatestMetricsPage extends StatefulWidget {
   const LatestMetricsPage({super.key});
   @override
   State<LatestMetricsPage> createState() => _LatestMetricsPageState();
 }
-
+// === STATE ===
 class _LatestMetricsPageState extends State<LatestMetricsPage> {
   bool _loading = false;
   String? _error;
-
-  // metrics
   String _acc = '—';
   String _macroF1 = '—';
   Map<String, dynamic> _params = const {};
@@ -30,7 +28,6 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
     super.initState();
     _fetch();
   }
-
   Future<void> _fetch() async {
     setState(() {
       _loading = true;
@@ -52,8 +49,6 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
             (row) => (row as List<dynamic>).map((e) => (e as num).toInt()).toList(),
           )
           .toList();
-
-      // per-class → righe tabella
       final perClassRaw = (metrics['per_class'] ?? {}) as Map<String, dynamic>;
       final rows = <Map<String, dynamic>>[];
       perClassRaw.forEach((k, v) {
@@ -67,7 +62,6 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
           'FP': (m['FP'] ?? 0) as num,
         });
       });
-
       setState(() {
         _acc = ((metrics['accuracy'] ?? 0.0) as num).toStringAsFixed(4);
         _macroF1 = ((metrics['macro_f1'] ?? 0.0) as num).toStringAsFixed(4);
@@ -83,7 +77,7 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
     }
   }
 
-  // ---------- UI helpers ----------
+  // == UI helpers ==
   Widget _glass({required Widget child, EdgeInsetsGeometry pad = const EdgeInsets.all(18)}) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(18),
@@ -108,7 +102,6 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
       ),
     );
   }
-
   Widget _kpiBox(String label, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,11 +123,9 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
       ],
     );
   }
-
   Widget _paramField(String label, String value) {
     return _kpiBox(label, value);
   }
-
   Widget _refreshButton() {
     return ElevatedButton.icon(
       onPressed: _loading ? null : _fetch,
@@ -150,7 +141,6 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
       ),
     );
   }
-
   Widget _perClassTable() {
     if (_perClassRows.isEmpty) {
       return _kpiBox('Per-class', '—');
@@ -192,12 +182,10 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
       ),
     );
   }
-
   Widget _cmHeatmap() {
     if (_labels.isEmpty || _cm.isEmpty) {
       return _glass(child: const Text('Confusion matrix not available'));
     }
-    // la scatola intera è ridimensionabile senza overflow
     return _glass(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,9 +195,8 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
             child: Text('Confusion matrix', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
           ),
           LayoutBuilder(builder: (context, c) {
-            // dimensione desiderata del quadrato heatmap
             const desired = 420.0;
-            // FittedBox scalerà se maxW < desired
+           
             return Center(
               child: FittedBox(
                 fit: BoxFit.contain,
@@ -226,7 +213,6 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
       ),
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -247,7 +233,6 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                // Header + refresh
                 Row(
                   children: [
                     const Expanded(
@@ -258,7 +243,6 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
                   ],
                 ),
                 const SizedBox(height: 18),
-                // KPI principali
                 Row(
                   children: [
                     Expanded(child: _kpiBox('Accuracy', _acc)),
@@ -267,8 +251,6 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
                   ],
                 ),
                 const SizedBox(height: 18),
-
-                // Layout responsivo: a 2 colonne se c'è spazio, altrimenti in colonna
                 LayoutBuilder(
                   builder: (context, c) {
                     final isWide = c.maxWidth >= 1100;
@@ -276,7 +258,6 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
                       return Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Colonna sinistra: parametri + per-class
                           Expanded(
                             child: Column(
                               children: [
@@ -322,12 +303,10 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
                             ),
                           ),
                           const SizedBox(width: 18),
-                          // Colonna destra: heatmap
                           Expanded(child: _cmHeatmap()),
                         ],
                       );
                     }
-                    // Stretto: tutto in colonna
                     return Column(
                       children: [
                         _glass(
@@ -374,7 +353,6 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
                     );
                   },
                 ),
-
                 if (_loading) ...[
                   const SizedBox(height: 18),
                   const Center(child: CircularProgressIndicator()),
@@ -396,12 +374,11 @@ class _LatestMetricsPageState extends State<LatestMetricsPage> {
   }
 }
 
-/// View componibile della confusion matrix (etichetta top/left + griglia)
+// == WIDGET CONFUSION MATRIX VIEW ==
 class _ConfusionMatrixView extends StatelessWidget {
   final List<String> labels;
   final List<List<int>> table;
-  final double side; // lato dell'area quadrata della griglia
-
+  final double side; 
   const _ConfusionMatrixView({
     required this.labels,
     required this.table,
@@ -419,20 +396,16 @@ class _ConfusionMatrixView extends StatelessWidget {
       final t = (v / maxVal).clamp(0.0, 1.0);
       return Color.lerp(Colors.white, Colors.orange, t)!;
     }
-
-    // Top labels (colonne) + left labels (righe) + griglia dentro uno Stack
     final topH = 28.0;
     final leftW = 92.0;
     final totalW = leftW + side + 8;
     final totalH = topH + side + 8;
-
     return Container(
       width: totalW,
       height: totalH,
       padding: const EdgeInsets.all(4),
       child: Stack(
         children: [
-          // Top header
           Positioned(
             left: leftW,
             top: 0,
@@ -453,7 +426,6 @@ class _ConfusionMatrixView extends StatelessWidget {
               }),
             ),
           ),
-          // Left header
           Positioned(
             left: 0,
             top: topH,
@@ -476,7 +448,6 @@ class _ConfusionMatrixView extends StatelessWidget {
               }),
             ),
           ),
-          // Grid
           Positioned(
             left: leftW,
             top: topH,
@@ -523,7 +494,6 @@ class _ConfusionMatrixView extends StatelessWidget {
       ),
     );
   }
-
   String _ellipsis(String s, int max) {
     if (s.length <= max) return s;
     return s.substring(0, max - 1) + '…';

@@ -1,7 +1,7 @@
 import 'package:bigdata_natural_disaster/builders/builder_utils.dart';
 import 'package:flutter/material.dart';
 
-/// Linea: avg_engagement per ora
+// == Top Hours by Engagement trend ===
 Widget buildTopHoursTrend(dynamic data) {
   final rows = ensureListOfMap(data);
   rows.sort((a, b) => i_(a['hour']).compareTo(i_(b['hour'])));

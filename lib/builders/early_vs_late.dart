@@ -1,7 +1,7 @@
 import 'package:bigdata_natural_disaster/builders/builder_utils.dart';
 import 'package:flutter/material.dart';
 
-/// Barre comparate: Early vs Late (volume + avg_engagement)
+// == Early vs Late bars ===
 Widget buildEarlyVsLateBars(dynamic data) {
   final rows = ensureListOfMap(data);
   num eVol = 0, lVol = 0, eAvg = 0, lAvg = 0;

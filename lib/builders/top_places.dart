@@ -2,13 +2,9 @@ import 'package:bigdata_natural_disaster/builders/builder_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_maps/maps.dart';
 
-/// === Adapter per QuerySpec ===
-/// Usa questo come builder in kQueries: builder: buildTopPlacesMapLike
+// == Top Places map-like ===
 Widget buildTopPlacesMapLike(dynamic data) => TopPlaces(data: data);
 
-/// Mostra i top luoghi su mappa (oceani bianchi, terre nere, bordi bianchi)
-/// con marker gialli e zoom/pan abilitati.
-/// Input atteso: [{ "place": "dallas", "tweets": 1234 }, ...]
 class TopPlaces extends StatefulWidget {
   final dynamic data;
   final int maxPoints;
@@ -27,7 +23,7 @@ class _TopPlacesState extends State<TopPlaces> {
     _zoomPan = MapZoomPanBehavior(
       enablePanning: true,
       enableDoubleTapZooming: true,
-      enableMouseWheelZooming: true, // web/desktop
+      enableMouseWheelZooming: true, 
       minZoomLevel: 1,
       maxZoomLevel: 12,
       zoomLevel: 1,
@@ -37,8 +33,6 @@ class _TopPlacesState extends State<TopPlaces> {
   @override
   Widget build(BuildContext context) {
     final rows = ensureListOfMap(widget.data);
-
-    // Prepara i marker: place -> lat/lon + count
     final markers = <_PlaceMarker>[];
     for (final r in rows) {
       final place = s_(r['place']).trim();
@@ -59,22 +53,18 @@ class _TopPlacesState extends State<TopPlaces> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        color: Colors.white, // oceani/sfondo bianchi
+        color: Colors.white, 
         child: SfMaps(
           layers: [
             MapShapeLayer(
               source: MapShapeSource.asset(
                 'assets/world_map.json',
-                shapeDataField: 'name', // se il tuo geojson usa un altro campo, cambialo
+                shapeDataField: 'name', 
               ),
-              color: Colors.black,       // terre nere
-              strokeColor: Colors.white, // bordi bianchi
+              color: Colors.black,       
+              strokeColor: Colors.white, 
               strokeWidth: 0.6,
-
-              // zoom/pan
               zoomPanBehavior: _zoomPan,
-
-              // Marker gialli + zoom on tap
               initialMarkersCount: pts.length,
               markerBuilder: (context, index) {
                 final m = pts[index];
@@ -105,7 +95,6 @@ class _TopPlacesState extends State<TopPlaces> {
   }
 }
 
-/// UI marker: pallino giallo + etichetta
 class _YellowDotWithLabel extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -155,38 +144,29 @@ class _PlaceMarker {
   _PlaceMarker({required this.name, required this.latLng, required this.count});
 }
 
-/// ---------- Geocoding minimale (estendi secondo le tue esigenze) ----------
 MapLatLng? _lookupLatLng(String raw) {
   final norm = _normPlace(raw);
 
   if (_geoIndex.containsKey(norm)) return _geoIndex[norm]!;
-
-  // primo token ("dallas, tx" -> "dallas")
   final parts = norm.split(RegExp(r'\s*,\s*'));
   if (parts.isNotEmpty && _geoIndex.containsKey(parts.first)) {
     return _geoIndex[parts.first]!;
   }
-
-  // contenimento (priorità a chiavi più lunghe)
   for (final key in _geoIndex.keys.toList()..sort((a, b) => b.length.compareTo(a.length))) {
     if (norm.contains(key)) return _geoIndex[key]!;
   }
   return null;
 }
-
 String _normPlace(String s) => s
     .toLowerCase()
     .replaceAll(RegExp(r'[^a-z0-9,\s]+'), '')
     .replaceAll(RegExp(r'\s+'), ' ')
     .trim();
-
 String _titleCase(String s) => s
     .split(' ')
     .map((w) => w.isEmpty ? w : (w[0].toUpperCase() + w.substring(1).toLowerCase()))
     .join(' ');
-
 final Map<String, MapLatLng> _geoIndex = {
-  // Area Harvey / Texas
   'dallas': MapLatLng(32.7767, -96.7970),
   'houston': MapLatLng(29.7604, -95.3698),
   'austin': MapLatLng(30.2672, -97.7431),
@@ -194,8 +174,6 @@ final Map<String, MapLatLng> _geoIndex = {
   'corpus christi': MapLatLng(27.8006, -97.3964),
   'galveston': MapLatLng(29.3013, -94.7977),
   'new orleans': MapLatLng(29.9511, -90.0715),
-
-  // Esempi globali
   'seattle': MapLatLng(47.6062, -122.3321),
   'greenland': MapLatLng(64.1835, -51.7216),
   'yakutsk': MapLatLng(62.0355, 129.6755),
@@ -203,8 +181,6 @@ final Map<String, MapLatLng> _geoIndex = {
   'harare': MapLatLng(-17.8292, 31.0522),
   'delhi': MapLatLng(28.6139, 77.2090),
   'brisbane': MapLatLng(-27.4698, 153.0251),
-
-  // Globali comuni
   'london': MapLatLng(51.5074, -0.1278),
   'paris': MapLatLng(48.8566, 2.3522),
   'madrid': MapLatLng(40.4168, -3.7038),

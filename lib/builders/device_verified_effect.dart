@@ -1,7 +1,7 @@
 import 'package:bigdata_natural_disaster/builders/builder_utils.dart';
 import 'package:flutter/material.dart';
 
-/// Istogrammi: volume per device × verified
+// == Device × Verified histograms ===
 Widget buildDeviceVerifiedHistos(dynamic data) {
   final rows = ensureListOfMap(data);
 

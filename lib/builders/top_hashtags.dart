@@ -1,7 +1,7 @@
 import 'package:bigdata_natural_disaster/builders/builder_utils.dart';
 import 'package:flutter/material.dart';
 
-/// Podio/cascata: top hashtag
+// == Top Hashtags podium ===
 Widget buildTopHashtagsPodium(dynamic data) {
   final rows = ensureListOfMap(data);
   rows.sort((a, b) => n_(b['uses']).compareTo(n_(a['uses'])));

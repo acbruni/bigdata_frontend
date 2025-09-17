@@ -1,7 +1,7 @@
 import 'package:bigdata_natural_disaster/builders/builder_utils.dart';
 import 'package:flutter/material.dart';
 
-/// Torta: sensitive vs non-sensitive
+// == Sensitive stats pie ===
 Widget buildSensitiveStatsPie(dynamic data) {
   final rows = ensureListOfMap(data);
   num yes = 0, no = 0;

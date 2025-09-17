@@ -4,24 +4,20 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-/// ============================
-/// CONFIG API (modifica se serve)
-/// ============================
-// Android emulator: http://10.0.2.2:8000
-// iOS simulator / Web:  http://127.0.0.1:8000
+// == API CONFIG ==
 const String API_BASE = 'http://127.0.0.1:8000';
 const String EP_PREDICT = '/model/predict';
 const String PREDICT_TEXT_KEY = 'text_full';
 const Map<String, String> API_HEADERS = {'Content-Type': 'application/json'};
 
+// == PAGE PREDICT INTERFACE ==
 class PredictPanelPage extends StatefulWidget {
   const PredictPanelPage({super.key});
   @override
   State<PredictPanelPage> createState() => _PredictPanelPageState();
 }
-
+// == STATE PREDICT INTERFACE ==
 class _PredictPanelPageState extends State<PredictPanelPage> {
-  // Controllers
   final _textCtrl = TextEditingController();
   final _hashtagsCtrl = TextEditingController();
   final _mentionsCtrl = TextEditingController();
@@ -30,13 +26,9 @@ class _PredictPanelPageState extends State<PredictPanelPage> {
   final _hourCtrl = TextEditingController();
 
   bool _isLoading = false;
-
-  // Stato risultati
   bool _hasPrediction = false;
   String _predIdx = '—';
   String _predName = '—';
-  // Prob totali attese in ordine (0..3)
-  // 0: Request/Need, 1: Offer/Donation, 2: Damage/Impact, 3: Other
   List<double>? _probs4;
 
   @override
@@ -55,7 +47,6 @@ class _PredictPanelPageState extends State<PredictPanelPage> {
     super.dispose();
   }
 
-  // ------------- Helpers -------------
   double _parseDoubleOrZero(String s) {
     final v = double.tryParse(s.trim());
     return v ?? 0.0;
@@ -88,7 +79,7 @@ class _PredictPanelPageState extends State<PredictPanelPage> {
   Future<void> _doPredict() async {
     setState(() {
       _isLoading = true;
-      _hasPrediction = false; // reset momentaneo
+      _hasPrediction = false; 
     });
     final uri = Uri.parse('$API_BASE$EP_PREDICT');
     final body = jsonEncode(_buildPayload());
@@ -104,8 +95,6 @@ class _PredictPanelPageState extends State<PredictPanelPage> {
                 ?.map((e) => (e as num).toDouble())
                 .toList() ??
             [];
-
-        // Porta a 4 valori (padding / truncate) nell’ordine richiesto
         final padded = List<double>.generate(
           4,
           (i) => i < probs.length ? probs[i] : 0.0,
@@ -152,7 +141,7 @@ class _PredictPanelPageState extends State<PredictPanelPage> {
     });
   }
 
-  // ------------- UI base (glass) -------------
+  // == WIDGET CARD ==
   Widget glassCard({
     required Widget child,
     EdgeInsetsGeometry padding = const EdgeInsets.all(18),
@@ -228,8 +217,6 @@ class _PredictPanelPageState extends State<PredictPanelPage> {
       ],
     );
   }
-
-  // Blocco informativo "read-only" nello stesso stile dei campi
   Widget glassInfoBox({
     required String label,
     required String value,
@@ -264,8 +251,6 @@ class _PredictPanelPageState extends State<PredictPanelPage> {
       ],
     );
   }
-
-  // Pulsante con gradiente (come AppBar)
   Widget _gradientButton({
     required IconData icon,
     required String label,
@@ -279,7 +264,6 @@ class _PredictPanelPageState extends State<PredictPanelPage> {
         Colors.black.withOpacity(0.80),
       ],
     );
-
     return Opacity(
       opacity: onTap == null ? 0.6 : 1.0,
       child: Material(
@@ -287,7 +271,7 @@ class _PredictPanelPageState extends State<PredictPanelPage> {
         child: Ink(
           decoration: BoxDecoration(
             gradient: gradient,
-            borderRadius: BorderRadius.circular(10), // più rettangolare
+            borderRadius: BorderRadius.circular(10), 
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.18),
@@ -437,7 +421,7 @@ class _PredictPanelPageState extends State<PredictPanelPage> {
     );
   }
 
-  // Blocchetto probabilità (stesso colore dei campi)
+  // == WIDGET BLOCCO PROBABILITÀ ==
   Widget _probBlock(String title, double? value) {
     final shown = _hasPrediction && value != null;
     final text = shown ? value.toStringAsFixed(4) : '—';
@@ -470,7 +454,6 @@ class _PredictPanelPageState extends State<PredictPanelPage> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // Predicted class index / name come blocchi "fill the gap"
                   glassInfoBox(
                     label: 'Predicted class index',
                     value: _hasPrediction ? _predIdx : '—',
@@ -481,8 +464,6 @@ class _PredictPanelPageState extends State<PredictPanelPage> {
                     value: _hasPrediction ? _predName : '—',
                   ),
                   const SizedBox(height: 20),
-
-                  // Titolo Probabilità
                   Align(
                     alignment: Alignment.center,
                     child: Padding(
@@ -497,8 +478,6 @@ class _PredictPanelPageState extends State<PredictPanelPage> {
                       ),
                     ),
                   ),
-
-                  // Griglia 2x2 dei blocchi (stesso look dei campi)
                   Row(
                     children: [
                       Expanded(
@@ -560,9 +539,9 @@ class _PredictPanelPageState extends State<PredictPanelPage> {
     );
   }
 
+// == PAGE BUILD ==
   @override
   Widget build(BuildContext context) {
-    // Sfondo bianco richiesto
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
